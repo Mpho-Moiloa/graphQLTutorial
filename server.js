@@ -5,26 +5,22 @@ const { buildSchema } = require('graphql');
 // Constructing a schema
 var schema = buildSchema(`
     type Query {
-        quoteOfTheDay: String
-        random: Float!
-        rollThreeDice: [Int]
+        rollDice(numDice: Int!, numSides: Int): [Int]
     }
 `);
 
 //rootValue provides a resolver function for each api endpoint
 var root = {
-    quoteOfTheDay: () => {
-        return Math.random() < 0.5 ? 'Take it easy' : 'Salvation lies within';
-    },
-    random: () => {
-        return Math.random();
-    },
-    rollThreeDice: () => {
-        return [1, 2, 3].map(_ => 1 + Math.floor(Math.random * 6));
+    rollDice: ({numDice, numSides}) => {
+        var output = [];
+        for (var i = 0; i < numDice; i++) {
+            output.push(1 + Math.floor(Math.random() * (numSides || 6)))
+        }
+        return output;
     }
 };
 
-// Run the GraphQL query '{ hello }' and print out the response
+// Run the GraphQL query '{ hello }' and print out the response for console.log()
 // graphql({
 //     schema,
 //     source: '{ hello }',
